@@ -32,7 +32,6 @@ const long kp = 20; // Kp - proportial term for PID
 const long ki = 1; // Ki - integral term for PID
 const long kd = 140; // Kd - derivative term for PID
 const long gainFactor = 10; // Stolen from PanTilt -> bitshift the entire PID result to get something the servo can really understand
-const long delayMs = 20;
 
 long servoPos;    // variable to store the servo position 
 long pixyX = pixyLow;
@@ -40,6 +39,9 @@ boolean acquired = false;
 long errorXSum = 0;
 const long errorXNull = 99999;
 long errorXPrev = errorXNull;
+
+unsigned long lastPositionUpdate = 0;
+unsigned long positionUpdateMs = 20;
  
 void setup() 
 { 
@@ -137,15 +139,19 @@ void loop()
       vel *= -1;
     }
     
+    newPos = servoPos + vel;
+    newPos = max(min(newPos, servoHigh), servoLow);
+
     if(abs(vel) > 0) {
-      newPos = servoPos + vel;
-      servoPos = newPos;
-      
-      servoPos = max(min(servoPos, servoHigh), servoLow);
-      servo.write(servoPos);
+      servo.write(newPos);
     }
-    
-    delay(delayMs);
+
+    // We don't actually know where the servo is, so we don't update our position assumption of it every time.
+    // It's like a delay, but without completely blocking everything else
+    if(millis() - lastPositionUpdate > positionUpdateMs) {
+      servoPos = newPos;
+      lastPositionUpdate = millis();
+    }
   } else {
     digitalWrite(shutterPin, LOW);
   }
