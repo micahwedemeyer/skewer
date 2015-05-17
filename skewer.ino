@@ -1,3 +1,10 @@
+/*
+A library for computer controlled camera panning, specifically for 
+skateboard motion blur (ie. "skater blur" -> "skewer")
+
+Copyright 2015 Micah Wedemeyer
+*/
+
 #include <SPI.h>
 #include <Pixy.h>
 #include <Servo.h>
