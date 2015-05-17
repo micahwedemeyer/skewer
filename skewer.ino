@@ -24,14 +24,15 @@ const long servoStart = 45;
 const long pixyLow = PIXY_MIN_X;
 const long pixyHigh = PIXY_MAX_X;
 const long pixyCenter = pixyHigh / 2;
-const long centerBoxWidth = 10; // The number of pixels that are allowed to be the center
+const long centerBoxWidth = 0; // The number of pixels that are allowed to be the center
 const boolean reversed = false;
 const boolean debug = false;
 
-const long kp = 80; // Kp - proportial term for PID
-const long ki = 0; // Ki - integral term for PID
-const long kd = 50; // Kd - derivative term for PID
+const long kp = 20; // Kp - proportial term for PID
+const long ki = 1; // Ki - integral term for PID
+const long kd = 140; // Kd - derivative term for PID
 const long gainFactor = 10; // Stolen from PanTilt -> bitshift the entire PID result to get something the servo can really understand
+const long delayMs = 20;
 
 long servoPos;    // variable to store the servo position 
 long pixyX = pixyLow;
@@ -144,7 +145,7 @@ void loop()
       servo.write(servoPos);
     }
     
-    delay(15 * abs(vel));
+    delay(delayMs);
   } else {
     digitalWrite(shutterPin, LOW);
   }
